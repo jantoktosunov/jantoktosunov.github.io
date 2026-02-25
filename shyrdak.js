@@ -1,56 +1,91 @@
-// --- Configuration & State ---
 const canvas = document.getElementById('shyrdakCanvas');
-const ctx = canvas.getContext('2d'); // The "brush" we use to draw
+const ctx = canvas.getContext('2d');
 
-// Default starting states
-let currentBgColor = '#3e2723';
-let currentPatternColor = '#c62828';
-let currentShape = 'diamond';
-const shapeSize = 60; // The general size of the stamps
+// Starting states based on your image
+let currentBgColor = '#1a1a1a'; // Black
+let currentPatternColor = '#e8e6d9'; // Cream
+let currentShape = 'intricate';
+const shapeSize = 80; 
 
-// --- Initialization ---
+// Symmetry state
+let useSymmetry = document.getElementById('symmetry-toggle').checked;
 
-// Function to fill the canvas background
+// Listen for symmetry toggle changes
+document.getElementById('symmetry-toggle').addEventListener('change', (e) => {
+    useSymmetry = e.target.checked;
+});
+
+// --- Initialization & Border Drawing ---
 function drawBackground() {
-    // Store the current drawing state before filling background
     ctx.save();
+    
+    // Fill base background
     ctx.fillStyle = currentBgColor;
-    // Fill the entire rectangle of the canvas
     ctx.fillRect(0, 0, canvas.width, canvas.height);
-    // Restore state
+    
+    // Draw ZigZag Border (characteristic of Shyrdaks)
+    ctx.fillStyle = currentPatternColor;
+    const borderThickness = 30;
+    const zigZagDepth = 15;
+    const step = 40;
+
+    ctx.beginPath();
+    ctx.moveTo(0, 0);
+    
+    // Top border
+    for(let x = 0; x <= canvas.width; x += step) {
+        ctx.lineTo(x, borderThickness);
+        ctx.lineTo(x + step/2, borderThickness - zigZagDepth);
+    }
+    // Right border
+    for(let y = 0; y <= canvas.height; y += step) {
+        ctx.lineTo(canvas.width - borderThickness + zigZagDepth, y);
+        ctx.lineTo(canvas.width - borderThickness, y + step/2);
+    }
+    // Bottom border
+    for(let x = canvas.width; x >= 0; x -= step) {
+        ctx.lineTo(x, canvas.height - borderThickness);
+        ctx.lineTo(x - step/2, canvas.height - borderThickness + zigZagDepth);
+    }
+    // Left border
+    for(let y = canvas.height; y >= 0; y -= step) {
+        ctx.lineTo(borderThickness - zigZagDepth, y);
+        ctx.lineTo(borderThickness, y - step/2);
+    }
+    
+    // Outer edge to fill the gap
+    ctx.lineTo(0, canvas.height);
+    ctx.lineTo(0, 0);
+    ctx.lineTo(canvas.width, 0);
+    ctx.lineTo(canvas.width, canvas.height);
+    ctx.lineTo(0, canvas.height);
+    
+    ctx.fill();
     ctx.restore();
 }
 
-// Draw the initial background immediately upon loading
+// Initial draw
 drawBackground();
 
-
 // --- Event Listeners (Controls) ---
-
-// 1. Background Color Pickers
 document.querySelectorAll('#bg-palette .color-btn').forEach(btn => {
     btn.addEventListener('click', (e) => {
-        // Remove 'active' class from previous button
         document.querySelector('#bg-palette .active').classList.remove('active');
-        // Add 'active' to clicked button
         e.target.classList.add('active');
-        // Update state variable
         currentBgColor = e.target.getAttribute('data-color');
-        // Redraw background (warning: this clears existing shapes, traditional for felt work)
         drawBackground();
     });
 });
 
-// 2. Pattern Color Pickers
 document.querySelectorAll('#pattern-palette .color-btn').forEach(btn => {
     btn.addEventListener('click', (e) => {
         document.querySelector('#pattern-palette .active').classList.remove('active');
         e.target.classList.add('active');
         currentPatternColor = e.target.getAttribute('data-color');
+        drawBackground(); // Redraw border in new pattern color
     });
 });
 
-// 3. Shape Pickers
 document.querySelectorAll('.shape-btn').forEach(btn => {
     btn.addEventListener('click', (e) => {
         document.querySelector('.shape-btn.active').classList.remove('active');
@@ -59,70 +94,81 @@ document.querySelectorAll('.shape-btn').forEach(btn => {
     });
 });
 
-// 4. Clear Button
 document.getElementById('clear-btn').addEventListener('click', drawBackground);
 
-
-// --- Drawing Logic (The core game mechanic) ---
-
-// Listen for clicks on the canvas itself
+// --- Drawing Logic with Symmetry ---
 canvas.addEventListener('mousedown', (e) => {
-    // Get the position of the canvas relative to the browser window
     const rect = canvas.getBoundingClientRect();
-    // Calculate the exact X and Y coordinates of the mouse click on the canvas
     const x = e.clientX - rect.left;
     const y = e.clientY - rect.top;
 
-    // Set the drawing color for the shape
     ctx.fillStyle = currentPatternColor;
+    
+    const centerX = canvas.width / 2;
+    const centerY = canvas.height / 2;
 
-    // Start a new drawing path
-    ctx.beginPath();
+    // Draw the main shape
+    drawSelectedShape(x, y);
 
-    // Decide which shape to draw based on current state
-    if (currentShape === 'diamond') {
-        drawDiamond(x, y, shapeSize);
-    } else if (currentShape === 'triangle') {
-        drawTriangle(x, y, shapeSize);
-    } else if (currentShape === 'horn') {
-        drawHorn(x, y, shapeSize);
+    // If symmetry is checked, draw the mirrored versions
+    if (useSymmetry) {
+        const dx = x - centerX;
+        const dy = y - centerY;
+
+        // Mirror X
+        drawSelectedShape(centerX - dx, y, true, false);
+        // Mirror Y
+        drawSelectedShape(x, centerY - dy, false, true);
+        // Mirror X and Y
+        drawSelectedShape(centerX - dx, centerY - dy, true, true);
     }
-
-    // Close the path and fill it with color
-    ctx.closePath();
-    ctx.fill();
 });
 
-
-// --- Helper functions to draw specific shapes ---
-
-// Helper function to draw a Diamond (Rhombus)
-function drawDiamond(x, y, size) {
-    ctx.moveTo(x, y - size/2); // Top point
-    ctx.lineTo(x + size/2, y); // Right point
-    ctx.lineTo(x, y + size/2); // Bottom point
-    ctx.lineTo(x - size/2, y); // Left point
-}
-
-// Helper function to draw a Triangle
-function drawTriangle(x, y, size) {
-    ctx.moveTo(x, y - size/2); // Top point
-    ctx.lineTo(x + size/2, y + size/2); // Bottom right
-    ctx.lineTo(x - size/2, y + size/2); // Bottom left
-}
-
-// Helper function to draw a simplified "Ram's Horn" motif using curves
-function drawHorn(centerX, centerY, size) {
-    // This uses Bezier curves to create a curled shape.
-    // It's a simplified representation of the complex traditional patterns.
-    const startX = centerX - size / 2;
-    const startY = centerY + size / 4;
+function drawSelectedShape(x, y, flipX = false, flipY = false) {
+    ctx.save();
+    ctx.translate(x, y);
     
-    ctx.moveTo(startX, startY);
-    // Curve up and right
-    ctx.bezierCurveTo(startX, centerY - size, centerX + size, centerY - size, centerX + size, centerY);
-    // Curve down and curled back in
-    ctx.bezierCurveTo(centerX + size, centerY + size/1.5, centerX, centerY + size/2, centerX, centerY);
-    // Curve back out to complete the shape thick in the middle
-    ctx.bezierCurveTo(centerX - size/4, centerY + size/2, startX + size/4, startY + size/4, startX, startY);
+    // Apply flipping for perfect mirror symmetry
+    ctx.scale(flipX ? -1 : 1, flipY ? -1 : 1);
+
+    ctx.beginPath();
+    if (currentShape === 'diamond') {
+        drawDiamond(0, 0, shapeSize);
+    } else if (currentShape === 'triangle') {
+        drawTriangle(0, 0, shapeSize);
+    } else if (currentShape === 'intricate') {
+        drawIntricateHorn(0, 0, shapeSize);
+    }
+    
+    ctx.closePath();
+    ctx.fill();
+    ctx.restore();
+}
+
+// --- Shape Functions ---
+function drawDiamond(x, y, size) {
+    ctx.moveTo(x, y - size/2); 
+    ctx.lineTo(x + size/2, y); 
+    ctx.lineTo(x, y + size/2); 
+    ctx.lineTo(x - size/2, y); 
+}
+
+function drawTriangle(x, y, size) {
+    ctx.moveTo(x, y - size/2); 
+    ctx.lineTo(x + size/2, y + size/2); 
+    ctx.lineTo(x - size/2, y + size/2); 
+}
+
+// A more complex swirling motif mimicking the image
+function drawIntricateHorn(x, y, size) {
+    const s = size / 50; 
+    ctx.scale(s, s);
+    
+    ctx.moveTo(0, -25);
+    ctx.bezierCurveTo(30, -30, 45, -10, 35, 15); // Outer curl right
+    ctx.bezierCurveTo(25, 40, 0, 30, -10, 15);   // Bottom loop
+    ctx.bezierCurveTo(-15, 5, -5, -5, 5, 0);     // Inner hook
+    ctx.bezierCurveTo(15, 5, 20, 15, 10, 20);    // Inner hook return
+    ctx.bezierCurveTo(5, 22, -20, 25, -25, 5);   // Swing left
+    ctx.bezierCurveTo(-30, -15, -15, -25, 0, -25); // Close to top
 }

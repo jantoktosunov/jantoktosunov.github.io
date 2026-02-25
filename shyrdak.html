@@ -20,33 +20,41 @@
             <div class="control-group">
                 <h3>1. Base Felt Color</h3>
                 <div class="color-palette" id="bg-palette">
-                    <button class="color-btn active" style="background-color: #3e2723;" data-color="#3e2723"></button> <button class="color-btn" style="background-color: #5d4037;" data-color="#5d4037"></button> <button class="color-btn" style="background-color: #263238;" data-color="#263238"></button> </div>
+                    <button class="color-btn active" style="background-color: #1a1a1a;" data-color="#1a1a1a"></button> <button class="color-btn" style="background-color: #e8e6d9;" data-color="#e8e6d9"></button> <button class="color-btn" style="background-color: #8b0000;" data-color="#8b0000"></button> </div>
             </div>
 
             <div class="control-group">
                 <h3>2. Pattern Color</h3>
                 <div class="color-palette" id="pattern-palette">
-                    <button class="color-btn active" style="background-color: #c62828;" data-color="#c62828"></button> <button class="color-btn" style="background-color: #f57f17;" data-color="#f57f17"></button> <button class="color-btn" style="background-color: #1565c0;" data-color="#1565c0"></button> <button class="color-btn" style="background-color: #2e7d32;" data-color="#2e7d32"></button> <button class="color-btn" style="background-color: #ffffff;" data-color="#ffffff"></button> </div>
+                    <button class="color-btn" style="background-color: #1a1a1a;" data-color="#1a1a1a"></button> <button class="color-btn active" style="background-color: #e8e6d9;" data-color="#e8e6d9"></button> <button class="color-btn" style="background-color: #a0a0a0;" data-color="#a0a0a0"></button> </div>
             </div>
 
             <div class="control-group">
                 <h3>3. Choose Shape</h3>
                 <div class="shape-palette" id="shape-palette">
-                    <button class="shape-btn active" data-shape="diamond">◆ Diamond (Yurt)</button>
-                    <button class="shape-btn" data-shape="horn">} Ram's Horn</button>
-                    <button class="shape-btn" data-shape="triangle">▲ Mountain</button>
+                    <button class="shape-btn active" data-shape="intricate">} Intricate Horn</button>
+                    <button class="shape-btn" data-shape="diamond">◆ Diamond Base</button>
+                    <button class="shape-btn" data-shape="triangle">▲ Edge Triangle</button>
                 </div>
             </div>
 
+            <div class="control-group">
+                <h3>4. Drawing Mode</h3>
+                <label style="display: flex; align-items: center; gap: 10px; cursor: pointer; font-weight: bold; background: #e3f2fd; padding: 10px; border-radius: 8px;">
+                    <input type="checkbox" id="symmetry-toggle" checked>
+                    4-Way Mirror Symmetry
+                </label>
+            </div>
+
             <div class="control-group" style="margin-top: auto;">
-                 <button id="clear-btn">Clear Rug</button>
+                 <button id="clear-btn">Clear & Redraw Border</button>
             </div>
 
         </div>
 
         <div class="canvas-area">
             <canvas id="shyrdakCanvas" width="600" height="400"></canvas>
-            <p class="instructions">Click on the rug to stamp the selected shape.</p>
+            <p class="instructions">Click on the rug to stamp. Keep Symmetry on for authentic patterns!</p>
         </div>
     </main>
 
