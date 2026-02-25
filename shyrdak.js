@@ -1,7 +1,7 @@
 const canvas = document.getElementById('shyrdakCanvas');
 const ctx = canvas.getContext('2d');
 
-// Starting states based on your image
+// Starting states
 let currentBgColor = '#1a1a1a'; // Black
 let currentPatternColor = '#e8e6d9'; // Cream
 let currentShape = 'intricate';
@@ -10,7 +10,6 @@ const shapeSize = 80;
 // Symmetry state
 let useSymmetry = document.getElementById('symmetry-toggle').checked;
 
-// Listen for symmetry toggle changes
 document.getElementById('symmetry-toggle').addEventListener('change', (e) => {
     useSymmetry = e.target.checked;
 });
@@ -19,48 +18,47 @@ document.getElementById('symmetry-toggle').addEventListener('change', (e) => {
 function drawBackground() {
     ctx.save();
     
-    // Fill base background
+    // 1. Fill the entire canvas with the Base Felt Color
     ctx.fillStyle = currentBgColor;
     ctx.fillRect(0, 0, canvas.width, canvas.height);
     
-    // Draw ZigZag Border (characteristic of Shyrdaks)
+    // 2. Draw the ZigZag Border in the Pattern Color
     ctx.fillStyle = currentPatternColor;
-    const borderThickness = 30;
+    const borderThickness = 35;
     const zigZagDepth = 15;
     const step = 40;
 
     ctx.beginPath();
-    ctx.moveTo(0, 0);
+    
+    // Draw the outer edge of the canvas
+    ctx.rect(0, 0, canvas.width, canvas.height);
+
+    // Draw the inner zigzag path
+    ctx.moveTo(0, borderThickness);
     
     // Top border
     for(let x = 0; x <= canvas.width; x += step) {
-        ctx.lineTo(x, borderThickness);
         ctx.lineTo(x + step/2, borderThickness - zigZagDepth);
+        ctx.lineTo(x + step, borderThickness);
     }
     // Right border
     for(let y = 0; y <= canvas.height; y += step) {
-        ctx.lineTo(canvas.width - borderThickness + zigZagDepth, y);
-        ctx.lineTo(canvas.width - borderThickness, y + step/2);
+        ctx.lineTo(canvas.width - borderThickness + zigZagDepth, y + step/2);
+        ctx.lineTo(canvas.width - borderThickness, y + step);
     }
     // Bottom border
     for(let x = canvas.width; x >= 0; x -= step) {
-        ctx.lineTo(x, canvas.height - borderThickness);
         ctx.lineTo(x - step/2, canvas.height - borderThickness + zigZagDepth);
+        ctx.lineTo(x - step, canvas.height - borderThickness);
     }
     // Left border
     for(let y = canvas.height; y >= 0; y -= step) {
-        ctx.lineTo(borderThickness - zigZagDepth, y);
-        ctx.lineTo(borderThickness, y - step/2);
+        ctx.lineTo(borderThickness - zigZagDepth, y - step/2);
+        ctx.lineTo(borderThickness, y - step);
     }
     
-    // Outer edge to fill the gap
-    ctx.lineTo(0, canvas.height);
-    ctx.lineTo(0, 0);
-    ctx.lineTo(canvas.width, 0);
-    ctx.lineTo(canvas.width, canvas.height);
-    ctx.lineTo(0, canvas.height);
-    
-    ctx.fill();
+    // CRUCIAL FIX: 'evenodd' cuts the zigzag hole out of the outer rectangle
+    ctx.fill('evenodd'); 
     ctx.restore();
 }
 
@@ -82,7 +80,7 @@ document.querySelectorAll('#pattern-palette .color-btn').forEach(btn => {
         document.querySelector('#pattern-palette .active').classList.remove('active');
         e.target.classList.add('active');
         currentPatternColor = e.target.getAttribute('data-color');
-        drawBackground(); // Redraw border in new pattern color
+        drawBackground(); 
     });
 });
 
@@ -107,10 +105,8 @@ canvas.addEventListener('mousedown', (e) => {
     const centerX = canvas.width / 2;
     const centerY = canvas.height / 2;
 
-    // Draw the main shape
     drawSelectedShape(x, y);
 
-    // If symmetry is checked, draw the mirrored versions
     if (useSymmetry) {
         const dx = x - centerX;
         const dy = y - centerY;
@@ -127,8 +123,6 @@ canvas.addEventListener('mousedown', (e) => {
 function drawSelectedShape(x, y, flipX = false, flipY = false) {
     ctx.save();
     ctx.translate(x, y);
-    
-    // Apply flipping for perfect mirror symmetry
     ctx.scale(flipX ? -1 : 1, flipY ? -1 : 1);
 
     ctx.beginPath();
@@ -159,16 +153,15 @@ function drawTriangle(x, y, size) {
     ctx.lineTo(x - size/2, y + size/2); 
 }
 
-// A more complex swirling motif mimicking the image
 function drawIntricateHorn(x, y, size) {
     const s = size / 50; 
     ctx.scale(s, s);
     
     ctx.moveTo(0, -25);
-    ctx.bezierCurveTo(30, -30, 45, -10, 35, 15); // Outer curl right
-    ctx.bezierCurveTo(25, 40, 0, 30, -10, 15);   // Bottom loop
-    ctx.bezierCurveTo(-15, 5, -5, -5, 5, 0);     // Inner hook
-    ctx.bezierCurveTo(15, 5, 20, 15, 10, 20);    // Inner hook return
-    ctx.bezierCurveTo(5, 22, -20, 25, -25, 5);   // Swing left
-    ctx.bezierCurveTo(-30, -15, -15, -25, 0, -25); // Close to top
+    ctx.bezierCurveTo(30, -30, 45, -10, 35, 15); 
+    ctx.bezierCurveTo(25, 40, 0, 30, -10, 15);   
+    ctx.bezierCurveTo(-15, 5, -5, -5, 5, 0);     
+    ctx.bezierCurveTo(15, 5, 20, 15, 10, 20);    
+    ctx.bezierCurveTo(5, 22, -20, 25, -25, 5);   
+    ctx.bezierCurveTo(-30, -15, -15, -25, 0, -25); 
 }
