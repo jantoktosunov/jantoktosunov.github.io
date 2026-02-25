@@ -1,0 +1,139 @@
+body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    background-color: #f4f4f6;
+    color: #222;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    min-height: 100vh;
+    margin: 0;
+    padding: 20px;
+}
+
+header {
+    text-align: center;
+    margin-bottom: 30px;
+}
+
+.back-link {
+    display: inline-block;
+    margin-top: 15px;
+    color: #1565c0;
+    text-decoration: none;
+}
+
+/* Main layout container for sidebar + canvas */
+.maker-container {
+    display: flex;
+    background: white;
+    padding: 30px;
+    border-radius: 16px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    gap: 30px;
+    max-width: 900px;
+    width: 100%;
+}
+
+/* Sidebar Controls */
+.controls {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 25px;
+    min-width: 200px;
+}
+
+h3 {
+    margin: 0 0 10px 0;
+    font-size: 1rem;
+    color: #555;
+}
+
+/* Color Buttons */
+.color-palette {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+}
+
+.color-btn {
+    width: 35px;
+    height: 35px;
+    border-radius: 50%;
+    border: 3px solid transparent;
+    cursor: pointer;
+    transition: transform 0.1s;
+}
+
+/* Highlight selected color */
+.color-btn.active {
+    border-color: #222;
+    transform: scale(1.1);
+}
+
+/* Shape Buttons */
+.shape-palette {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.shape-btn {
+    padding: 10px;
+    border: 2px solid #eee;
+    background: white;
+    cursor: pointer;
+    border-radius: 8px;
+    font-weight: 600;
+    text-align: left;
+}
+
+/* Highlight selected shape */
+.shape-btn.active {
+    background-color: #e3f2fd;
+    border-color: #1565c0;
+    color: #1565c0;
+}
+
+#clear-btn {
+    padding: 12px;
+    background-color: #d32f2f;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    font-weight: bold;
+    width: 100%;
+}
+
+/* Canvas Area */
+.canvas-area {
+    flex: 2;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+canvas {
+    border-radius: 4px;
+    cursor: crosshair;
+    /* A thick border to resemble the heavy felt edge */
+    box-shadow: 0 0 0 8px #333 inset, 0 4px 8px rgba(0,0,0,0.1);
+}
+
+.instructions {
+    font-size: 0.9rem;
+    color: #777;
+    margin-top: 10px;
+}
+
+/* Responsive design for smaller screens */
+@media (max-width: 768px) {
+    .maker-container {
+        flex-direction: column-reverse;
+    }
+    canvas {
+        max-width: 100%;
+        height: auto;
+    }
+}

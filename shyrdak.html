@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Shyrdak Maker</title>
+    <link rel="stylesheet" href="shyrdak.css">
+</head>
+<body>
+
+    <header>
+        <h1>Kyrgyz Shyrdak Maker</h1>
+        <p>Select felt colors and stamp traditional shapes to create your own mosaic carpet.</p>
+        <a href="index.html" class="back-link">← Back to Home</a>
+    </header>
+
+    <main class="maker-container">
+        <div class="controls">
+            
+            <div class="control-group">
+                <h3>1. Base Felt Color</h3>
+                <div class="color-palette" id="bg-palette">
+                    <button class="color-btn active" style="background-color: #3e2723;" data-color="#3e2723"></button> <button class="color-btn" style="background-color: #5d4037;" data-color="#5d4037"></button> <button class="color-btn" style="background-color: #263238;" data-color="#263238"></button> </div>
+            </div>
+
+            <div class="control-group">
+                <h3>2. Pattern Color</h3>
+                <div class="color-palette" id="pattern-palette">
+                    <button class="color-btn active" style="background-color: #c62828;" data-color="#c62828"></button> <button class="color-btn" style="background-color: #f57f17;" data-color="#f57f17"></button> <button class="color-btn" style="background-color: #1565c0;" data-color="#1565c0"></button> <button class="color-btn" style="background-color: #2e7d32;" data-color="#2e7d32"></button> <button class="color-btn" style="background-color: #ffffff;" data-color="#ffffff"></button> </div>
+            </div>
+
+            <div class="control-group">
+                <h3>3. Choose Shape</h3>
+                <div class="shape-palette" id="shape-palette">
+                    <button class="shape-btn active" data-shape="diamond">◆ Diamond (Yurt)</button>
+                    <button class="shape-btn" data-shape="horn">} Ram's Horn</button>
+                    <button class="shape-btn" data-shape="triangle">▲ Mountain</button>
+                </div>
+            </div>
+
+            <div class="control-group" style="margin-top: auto;">
+                 <button id="clear-btn">Clear Rug</button>
+            </div>
+
+        </div>
+
+        <div class="canvas-area">
+            <canvas id="shyrdakCanvas" width="600" height="400"></canvas>
+            <p class="instructions">Click on the rug to stamp the selected shape.</p>
+        </div>
+    </main>
+
+    <script src="shyrdak.js"></script>
+</body>
+</html>
